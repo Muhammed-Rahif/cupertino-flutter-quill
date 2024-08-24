@@ -1,6 +1,7 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart' show Tooltip;
 
 import '../../../../extensions.dart';
 import '../../../controller/quill_controller.dart';
@@ -126,32 +127,59 @@ class QuillToolbarSearchDialogState extends State<QuillToolbarSearchDialog> {
       padding: addBottomPadding ? const EdgeInsets.only(bottom: 12) : null,
       child: Row(
         children: [
-          IconButton(
-            icon: const Icon(Icons.close),
-            tooltip: context.loc.close,
-            visualDensity: VisualDensity.compact,
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
+          Tooltip(
+            decoration: BoxDecoration(
+              color: CupertinoTheme.of(context).barBackgroundColor,
+              borderRadius: const BorderRadius.all(Radius.circular(5)),
+            ),
+            textStyle: TextStyle(
+              color: CupertinoTheme.of(context).textTheme.textStyle.color,
+            ),
+            message: context.loc.close,
+            child: CupertinoButton(
+              padding: EdgeInsets.zero,
+              minSize: 54,
+              // visualDensity: VisualDensity.compact,
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Icon(CupertinoIcons.clear),
+            ),
           ),
-          IconButton(
-            icon: const Icon(Icons.more_vert),
-            isSelected: _caseSensitive || _wholeWord,
-            tooltip: context.loc.searchSettings,
-            visualDensity: VisualDensity.compact,
-            onPressed: () {
-              setState(() {
-                _searchSettingsUnfolded = !_searchSettingsUnfolded;
-              });
-            },
+          Tooltip(
+            decoration: BoxDecoration(
+              color: CupertinoTheme.of(context).barBackgroundColor,
+              borderRadius: const BorderRadius.all(Radius.circular(5)),
+            ),
+            textStyle: TextStyle(
+              color: CupertinoTheme.of(context).textTheme.textStyle.color,
+            ),
+            message: context.loc.searchSettings,
+            child: CupertinoButton(
+              padding: EdgeInsets.zero,
+              minSize: 54,
+              // isSelected: _caseSensitive || _wholeWord,
+              // visualDensity: VisualDensity.compact,
+              onPressed: () {
+                setState(() {
+                  _searchSettingsUnfolded = !_searchSettingsUnfolded;
+                });
+              },
+              child: const Icon(CupertinoIcons.ellipsis_vertical),
+            ),
           ),
           Expanded(
-            child: TextField(
+            child: CupertinoTextField(
               style: widget.dialogTheme?.inputTextStyle,
-              decoration: InputDecoration(
-                isDense: true,
-                suffixText: matchShown,
-                suffixStyle: widget.dialogTheme?.labelTextStyle,
+              placeholder: matchShown,
+              // decoration: InputDecoration(
+              //   isDense: true,
+              //   suffixText: matchShown,
+              //   suffixStyle: widget.dialogTheme?.labelTextStyle,
+              // ),
+              suffix: Text(
+                '$matchShown ',
+                style: widget.dialogTheme?.labelTextStyle,
               ),
               autofocus: true,
               onChanged: _textChanged,
@@ -160,73 +188,111 @@ class QuillToolbarSearchDialogState extends State<QuillToolbarSearchDialog> {
               controller: _textController,
             ),
           ),
-          IconButton(
-            icon: const Icon(Icons.keyboard_arrow_up),
-            tooltip: context.loc.moveToPreviousOccurrence,
-            onPressed: (_offsets.isNotEmpty) ? _moveToPrevious : null,
+          Tooltip(
+            decoration: BoxDecoration(
+              color: CupertinoTheme.of(context).barBackgroundColor,
+              borderRadius: const BorderRadius.all(Radius.circular(5)),
+            ),
+            textStyle: TextStyle(
+              color: CupertinoTheme.of(context).textTheme.textStyle.color,
+            ),
+            message: context.loc.moveToPreviousOccurrence,
+            child: CupertinoButton(
+              padding: EdgeInsets.zero,
+              minSize: 54,
+              onPressed: (_offsets.isNotEmpty) ? _moveToPrevious : null,
+              child: const Icon(CupertinoIcons.chevron_up),
+            ),
           ),
-          IconButton(
-            icon: const Icon(Icons.keyboard_arrow_down),
-            tooltip: context.loc.moveToNextOccurrence,
-            onPressed: (_offsets.isNotEmpty) ? _moveToNext : null,
+          Tooltip(
+            decoration: BoxDecoration(
+              color: CupertinoTheme.of(context).barBackgroundColor,
+              borderRadius: const BorderRadius.all(Radius.circular(5)),
+            ),
+            textStyle: TextStyle(
+              color: CupertinoTheme.of(context).textTheme.textStyle.color,
+            ),
+            message: context.loc.moveToNextOccurrence,
+            child: CupertinoButton(
+              padding: EdgeInsets.zero,
+              minSize: 54,
+              onPressed: (_offsets.isNotEmpty) ? _moveToNext : null,
+              child: const Icon(CupertinoIcons.chevron_down),
+            ),
           ),
         ],
       ),
     );
 
-    final searchSettings = SizedBox(
+    final searchSettings = Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       height: 45,
       child: Row(
         children: [
           Expanded(
-            child: CheckboxListTile(
-              controlAffinity: ListTileControlAffinity.leading,
-              visualDensity: VisualDensity.compact,
-              contentPadding: EdgeInsets.zero,
-              title: Text(
-                context.loc.caseSensitive,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              value: _caseSensitive,
-              onChanged: (value) {
-                setState(() {
-                  _caseSensitive = value!;
-                  _findText();
-                });
-              },
+            child: Row(
+              children: [
+                Text(
+                  context.loc.caseSensitive,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                CupertinoCheckbox(
+                  activeColor: CupertinoTheme.of(context).primaryColor,
+                  // controlAffinity: ListTileControlAffinity.leading,
+                  // visualDensity: VisualDensity.compact,
+                  // contentPadding: EdgeInsets.zero,
+                  // title: Text(
+                  //   context.loc.caseSensitive,
+                  //   maxLines: 1,
+                  //   overflow: TextOverflow.ellipsis,
+                  // ),
+                  value: _caseSensitive,
+                  onChanged: (value) {
+                    setState(() {
+                      _caseSensitive = value!;
+                      _findText();
+                    });
+                  },
+                ),
+              ],
             ),
           ),
           Expanded(
-            child: CheckboxListTile(
-              controlAffinity: ListTileControlAffinity.leading,
-              visualDensity: VisualDensity.compact,
-              contentPadding: EdgeInsets.zero,
-              title: Text(
-                context.loc.wholeWord,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              value: _wholeWord,
-              onChanged: (value) {
-                setState(() {
-                  _wholeWord = value!;
-                  _findText();
-                });
-              },
+            child: Row(
+              children: [
+                Text(
+                  context.loc.wholeWord,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                CupertinoCheckbox(
+                  activeColor: CupertinoTheme.of(context).primaryColor,
+                  // controlAffinity: ListTileControlAffinity.leading,
+                  // visualDensity: VisualDensity.compact,
+                  // contentPadding: EdgeInsets.zero,
+                  // title: Text(
+                  //   context.loc.wholeWord,
+                  // maxLines: 1,
+                  // overflow: TextOverflow.ellipsis,
+                  // ),
+                  value: _wholeWord,
+                  onChanged: (value) {
+                    setState(() {
+                      _wholeWord = value!;
+                      _findText();
+                    });
+                  },
+                ),
+              ],
             ),
           ),
         ],
       ),
     );
 
-    return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(5),
-      ),
-      backgroundColor: widget.dialogTheme?.dialogBackgroundColor,
-      alignment: searchBarAlignment,
-      insetPadding: EdgeInsets.zero,
+    return Container(
+      color: CupertinoTheme.of(context).barBackgroundColor,
       child: FlutterQuillLocalizationsWidget(
         child: Builder(
           builder: (context) {

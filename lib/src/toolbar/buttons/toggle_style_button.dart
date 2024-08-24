@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart' show Icons;
 
 import '../../common/utils/widgets.dart';
 import '../../document/attribute.dart';
@@ -46,41 +47,50 @@ class QuillToolbarToggleStyleButtonState
   (String, IconData) get _defaultTooltipAndIconData {
     switch (widget.attribute.key) {
       case 'bold':
-        return (context.loc.bold, Icons.format_bold);
+        return (context.loc.bold, CupertinoIcons.bold);
       case 'script':
         if (widget.attribute.value == ScriptAttributes.sub.value) {
-          return (context.loc.subscript, Icons.subscript);
+          return (context.loc.subscript, CupertinoIcons.textformat_subscript);
         }
-        return (context.loc.superscript, Icons.superscript);
+        return (context.loc.superscript, CupertinoIcons.textformat_superscript);
       case 'italic':
-        return (context.loc.italic, Icons.format_italic);
+        return (context.loc.italic, CupertinoIcons.italic);
       case 'small':
-        return (context.loc.small, Icons.format_size);
+        return (context.loc.small, CupertinoIcons.textformat_size);
       case 'underline':
-        return (context.loc.underline, Icons.format_underline);
+        return (context.loc.underline, CupertinoIcons.underline);
       case 'strike':
-        return (context.loc.strikeThrough, Icons.format_strikethrough);
+        return (context.loc.strikeThrough, CupertinoIcons.strikethrough);
       case 'code':
-        return (context.loc.inlineCode, Icons.code);
+        return (
+          context.loc.inlineCode,
+          CupertinoIcons.chevron_left_slash_chevron_right
+        );
       case 'direction':
         return (context.loc.textDirection, Icons.format_textdirection_r_to_l);
       case 'list':
         if (widget.attribute.value == 'bullet') {
-          return (context.loc.bulletList, Icons.format_list_bulleted);
+          return (context.loc.bulletList, CupertinoIcons.list_bullet);
         }
-        return (context.loc.numberedList, Icons.format_list_numbered);
+        return (context.loc.numberedList, CupertinoIcons.list_number);
       case 'code-block':
-        return (context.loc.codeBlock, Icons.code);
+        return (
+          context.loc.codeBlock,
+          CupertinoIcons.chevron_left_slash_chevron_right
+        );
       case 'blockquote':
-        return (context.loc.quote, Icons.format_quote);
+        return (context.loc.quote, CupertinoIcons.text_quote);
       case 'align':
         return switch (widget.attribute.value) {
-          'left' => (context.loc.alignLeft, Icons.format_align_left),
-          'right' => (context.loc.alignRight, Icons.format_align_right),
-          'center' => (context.loc.alignCenter, Icons.format_align_center),
-          'justify' => (context.loc.alignJustify, Icons.format_align_justify),
+          'left' => (context.loc.alignLeft, CupertinoIcons.text_alignleft),
+          'right' => (context.loc.alignRight, CupertinoIcons.text_alignright),
+          'center' => (
+              context.loc.alignCenter,
+              CupertinoIcons.text_aligncenter
+            ),
+          'justify' => (context.loc.alignJustify, CupertinoIcons.text_justify),
           Object() => throw ArgumentError(widget.attribute.value),
-          null => (context.loc.alignCenter, Icons.format_align_center),
+          null => (context.loc.alignCenter, CupertinoIcons.text_aligncenter),
         };
       default:
         throw ArgumentError(
@@ -117,6 +127,7 @@ class QuillToolbarToggleStyleButtonState
       );
     }
     return UtilityWidgets.maybeTooltip(
+      context,
       message: tooltip,
       child: defaultToggleStyleButtonBuilder(
         context,

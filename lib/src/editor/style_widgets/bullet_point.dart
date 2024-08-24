@@ -29,7 +29,7 @@ class QuillEditorBulletPoint extends StatelessWidget {
               .customWidget ??
           Text(
             '•',
-            style: style,
+            style: style.copyWith(fontSize: 18),
             textAlign: textAlign,
           ),
     );

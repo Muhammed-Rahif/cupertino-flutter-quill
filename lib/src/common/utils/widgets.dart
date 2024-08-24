@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart' show Tooltip;
 
 typedef WidgetWrapper = Widget Function(Widget child);
 
@@ -8,12 +9,23 @@ class UtilityWidgets {
 
   /// Conditionally wraps the [child] with [Tooltip] widget if [message]
   /// is not null and not empty.
-  static Widget maybeTooltip({
+  static Widget maybeTooltip(
+    BuildContext context, {
     required Widget child,
     String? message,
   }) =>
       (message?.isNotEmpty ?? false)
-          ? Tooltip(message: message, child: child)
+          ? Tooltip(
+              decoration: BoxDecoration(
+                color: CupertinoTheme.of(context).barBackgroundColor,
+                borderRadius: const BorderRadius.all(Radius.circular(5)),
+              ),
+              textStyle: TextStyle(
+                color: CupertinoTheme.of(context).textTheme.textStyle.color,
+              ),
+              message: message,
+              child: child,
+            )
           : child;
 
   /// Conditionally wraps the [child] with [wrapper] widget if [enabled]

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 import '../../editor/widgets/link.dart';
 import '../../editor_toolbar_shared/quill_configurations_ext.dart';
@@ -62,13 +62,7 @@ class QuillToolbarLinkStyleButtonState
   }
 
   @override
-  IconData get defaultIconData => Icons.link;
-
-  Color get dialogBarrierColor {
-    return options.dialogBarrierColor ??
-        context.quillSharedConfigurations?.dialogBarrierColor ??
-        Colors.black54;
-  }
+  IconData get defaultIconData => CupertinoIcons.link;
 
   RegExp? get linkRegExp {
     return options.linkRegExp;
@@ -112,9 +106,9 @@ class QuillToolbarLinkStyleButtonState
   Future<void> _openLinkDialog(BuildContext context) async {
     final initialTextLink = QuillTextLink.prepare(widget.controller);
 
-    final textLink = await showDialog<QuillTextLink>(
+    final textLink = await showCupertinoDialog<QuillTextLink>(
+      barrierDismissible: true,
       context: context,
-      barrierColor: dialogBarrierColor,
       builder: (_) {
         return FlutterQuillLocalizationsWidget(
           child: _LinkDialog(
@@ -182,22 +176,30 @@ class _LinkDialogState extends State<_LinkDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      backgroundColor: widget.dialogTheme?.dialogBackgroundColor,
+    return CupertinoAlertDialog(
       content: Form(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
             const SizedBox(height: 8),
-            TextFormField(
+            Text(
+              context.loc.pleaseEnterTextForYourLink,
+              style: widget.dialogTheme?.labelTextStyle,
+              textAlign: TextAlign.left,
+            ),
+            const SizedBox(height: 8),
+            CupertinoTextField(
               keyboardType: TextInputType.text,
               style: widget.dialogTheme?.inputTextStyle,
-              decoration: InputDecoration(
-                labelText: context.loc.text,
-                hintText: context.loc.pleaseEnterTextForYourLink,
-                labelStyle: widget.dialogTheme?.labelTextStyle,
-                floatingLabelStyle: widget.dialogTheme?.labelTextStyle,
-              ),
+              // decoration: InputDecoration(
+              //   labelText: context.loc.text,
+              //   hintText: context.loc.pleaseEnterTextForYourLink,
+              //   labelStyle: widget.dialogTheme?.labelTextStyle,
+              //   floatingLabelStyle: widget.dialogTheme?.labelTextStyle,
+              // ),
+              placeholder: context.loc.text,
               autofocus: true,
               onChanged: _textChanged,
               controller: _textController,
@@ -208,15 +210,22 @@ class _LinkDialogState extends State<_LinkDialog> {
               ],
             ),
             const SizedBox(height: 16),
-            TextFormField(
+            Text(
+              context.loc.pleaseEnterTheLinkURL,
+              style: widget.dialogTheme?.labelTextStyle,
+              textAlign: TextAlign.left,
+            ),
+            const SizedBox(height: 8),
+            CupertinoTextField(
               keyboardType: TextInputType.url,
               style: widget.dialogTheme?.inputTextStyle,
-              decoration: InputDecoration(
-                labelText: context.loc.link,
-                hintText: context.loc.pleaseEnterTheLinkURL,
-                labelStyle: widget.dialogTheme?.labelTextStyle,
-                floatingLabelStyle: widget.dialogTheme?.labelTextStyle,
-              ),
+              // decoration: InputDecoration(
+              //   labelText: context.loc.link,
+              //   hintText: context.loc.pleaseEnterTheLinkURL,
+              //   labelStyle: widget.dialogTheme?.labelTextStyle,
+              //   floatingLabelStyle: widget.dialogTheme?.labelTextStyle,
+              // ),
+              placeholder: context.loc.link,
               onChanged: _linkChanged,
               controller: _linkController,
               textInputAction: TextInputAction.done,
@@ -246,7 +255,7 @@ class _LinkDialogState extends State<_LinkDialog> {
       );
     }
 
-    return TextButton(
+    return CupertinoButton(
       onPressed: _canPress() ? _applyLink : null,
       child: Text(
         context.loc.ok,

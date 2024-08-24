@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../common/structs/horizontal_spacing.dart';
@@ -241,9 +242,9 @@ class DefaultStyles {
   final Map<String, Color>? palette;
 
   static DefaultStyles getInstance(BuildContext context) {
-    final themeData = Theme.of(context);
-    final defaultTextStyle = DefaultTextStyle.of(context);
-    final baseStyle = defaultTextStyle.style.copyWith(
+    final themeData = CupertinoTheme.of(context);
+    final defaultTextStyle = themeData.textTheme;
+    final baseStyle = defaultTextStyle.textStyle.copyWith(
       fontSize: 16,
       height: 1.15,
       decoration: TextDecoration.none,
@@ -251,23 +252,23 @@ class DefaultStyles {
     const baseHorizontalSpacing = HorizontalSpacing(0, 0);
     const baseVerticalSpacing = VerticalSpacing(6, 0);
     String fontFamily;
-    if (isAppleOS(platform: themeData.platform, supportWeb: true)) {
-      fontFamily = 'Menlo';
-    } else {
-      fontFamily = 'Roboto Mono';
-    }
+    // if (isAppleOS(platform: themeData.platform, supportWeb: true)) {
+    //   fontFamily = 'Menlo';
+    // } else {
+    fontFamily = 'mono';
+    // }
 
     final inlineCodeStyle = TextStyle(
       fontSize: 14,
-      color: themeData.colorScheme.primary.withOpacity(0.8),
+      color: themeData.textTheme.textStyle.color?.withOpacity(0.8),
       fontFamily: fontFamily,
     );
 
     return DefaultStyles(
       h1: DefaultTextBlockStyle(
-          defaultTextStyle.style.copyWith(
+          defaultTextStyle.textStyle.copyWith(
             fontSize: 34,
-            color: defaultTextStyle.style.color,
+            color: defaultTextStyle.textStyle.color,
             letterSpacing: -0.5,
             height: 1.083,
             fontWeight: FontWeight.bold,
@@ -278,9 +279,9 @@ class DefaultStyles {
           VerticalSpacing.zero,
           null),
       h2: DefaultTextBlockStyle(
-          defaultTextStyle.style.copyWith(
+          defaultTextStyle.textStyle.copyWith(
             fontSize: 30,
-            color: defaultTextStyle.style.color,
+            color: defaultTextStyle.textStyle.color,
             letterSpacing: -0.8,
             height: 1.067,
             fontWeight: FontWeight.bold,
@@ -291,9 +292,9 @@ class DefaultStyles {
           VerticalSpacing.zero,
           null),
       h3: DefaultTextBlockStyle(
-        defaultTextStyle.style.copyWith(
+        defaultTextStyle.textStyle.copyWith(
           fontSize: 24,
-          color: defaultTextStyle.style.color,
+          color: defaultTextStyle.textStyle.color,
           letterSpacing: -0.5,
           height: 1.083,
           fontWeight: FontWeight.bold,
@@ -305,9 +306,9 @@ class DefaultStyles {
         null,
       ),
       h4: DefaultTextBlockStyle(
-        defaultTextStyle.style.copyWith(
+        defaultTextStyle.textStyle.copyWith(
           fontSize: 20,
-          color: defaultTextStyle.style.color,
+          color: defaultTextStyle.textStyle.color,
           letterSpacing: -0.4,
           height: 1.1,
           fontWeight: FontWeight.bold,
@@ -319,9 +320,9 @@ class DefaultStyles {
         null,
       ),
       h5: DefaultTextBlockStyle(
-        defaultTextStyle.style.copyWith(
+        defaultTextStyle.textStyle.copyWith(
           fontSize: 18,
-          color: defaultTextStyle.style.color,
+          color: defaultTextStyle.textStyle.color,
           letterSpacing: -0.2,
           height: 1.11,
           fontWeight: FontWeight.bold,
@@ -333,9 +334,9 @@ class DefaultStyles {
         null,
       ),
       h6: DefaultTextBlockStyle(
-        defaultTextStyle.style.copyWith(
+        defaultTextStyle.textStyle.copyWith(
           fontSize: 16,
-          color: defaultTextStyle.style.color,
+          color: defaultTextStyle.textStyle.color,
           letterSpacing: -0.1,
           height: 1.125,
           fontWeight: FontWeight.bold,
@@ -399,7 +400,7 @@ class DefaultStyles {
       underline: const TextStyle(decoration: TextDecoration.underline),
       strikeThrough: const TextStyle(decoration: TextDecoration.lineThrough),
       inlineCode: InlineCodeStyle(
-        backgroundColor: Colors.grey.shade100,
+        backgroundColor: themeData.barBackgroundColor,
         radius: const Radius.circular(3),
         style: inlineCodeStyle,
         header1: inlineCodeStyle.copyWith(
@@ -416,11 +417,11 @@ class DefaultStyles {
         ),
       ),
       link: TextStyle(
-        color: themeData.colorScheme.secondary,
+        color: CupertinoColors.systemBlue.resolveFrom(context),
         decoration: TextDecoration.underline,
       ),
       placeHolder: DefaultTextBlockStyle(
-          defaultTextStyle.style.copyWith(
+          defaultTextStyle.textStyle.copyWith(
             fontSize: 20,
             height: 1.5,
             color: Colors.grey.withOpacity(0.6),
@@ -450,7 +451,7 @@ class DefaultStyles {
       ),
       code: DefaultTextBlockStyle(
           TextStyle(
-            color: Colors.blue.shade900.withOpacity(0.9),
+            color: themeData.textTheme.textStyle.color,
             fontFamily: fontFamily,
             fontSize: 13,
             height: 1.15,
@@ -459,8 +460,8 @@ class DefaultStyles {
           baseVerticalSpacing,
           VerticalSpacing.zero,
           BoxDecoration(
-            color: Colors.grey.shade50,
-            borderRadius: BorderRadius.circular(2),
+            color: themeData.barBackgroundColor,
+            borderRadius: BorderRadius.circular(4),
           )),
       indent: DefaultTextBlockStyle(
         baseStyle,

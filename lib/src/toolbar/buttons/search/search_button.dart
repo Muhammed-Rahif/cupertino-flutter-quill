@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart' show Colors;
 
 import '../../../controller/quill_controller.dart';
 import '../../../editor_toolbar_shared/quill_configurations_ext.dart';
@@ -53,7 +54,7 @@ class QuillToolbarSearchButton extends StatelessWidget {
   IconData _iconData(BuildContext context) {
     return options.iconData ??
         baseButtonExtraOptions(context)?.iconData ??
-        Icons.search;
+        CupertinoIcons.search;
   }
 
   String _tooltip(BuildContext context) {
@@ -118,8 +119,8 @@ class QuillToolbarSearchButton extends StatelessWidget {
       );
       return;
     }
-    await showDialog<String>(
-      barrierColor: _dialogBarrierColor(context),
+    await showCupertinoModalPopup<String>(
+      barrierDismissible: true,
       context: context,
       builder: (_) => FlutterQuillLocalizationsWidget(
         child: QuillToolbarSearchDialog(

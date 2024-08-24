@@ -1,4 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart' show Icons, Tooltip;
+import 'package:pull_down_button/pull_down_button.dart';
 
 import '../../../extensions.dart';
 import '../../document/attribute.dart';
@@ -82,17 +84,6 @@ class QuillToolbarFontFamilyButtonState extends QuillToolbarBaseButtonState<
   @override
   IconData get defaultIconData => Icons.font_download_outlined;
 
-  void _onPressed() {
-    if (_menuController.isOpen) {
-      _menuController.close();
-    } else {
-      _menuController.open();
-    }
-    afterButtonPressed?.call();
-  }
-
-  final _menuController = MenuController();
-
   @override
   Widget build(BuildContext context) {
     final baseButtonConfigurations = context.quillToolbarBaseButtonOptions;
@@ -106,7 +97,7 @@ class QuillToolbarFontFamilyButtonState extends QuillToolbarBaseButtonState<
           defaultDisplayText: _defaultDisplayText,
           controller: controller,
           context: context,
-          onPressed: _onPressed,
+          onPressed: () {},
         ),
       );
     }
@@ -119,18 +110,28 @@ class QuillToolbarFontFamilyButtonState extends QuillToolbarBaseButtonState<
               ? '$effectiveTooltip: $currentValue'
               : '${context.loc.font}: $currentValue';
         }
-        return Tooltip(message: effectiveTooltip, child: child);
+        return Tooltip(
+          decoration: BoxDecoration(
+            color: CupertinoTheme.of(context).barBackgroundColor,
+            borderRadius: const BorderRadius.all(Radius.circular(5)),
+          ),
+          textStyle: TextStyle(
+            color: CupertinoTheme.of(context).textTheme.textStyle.color,
+          ),
+          message: effectiveTooltip,
+          child: child,
+        );
       },
-      child: MenuAnchor(
-        controller: _menuController,
-        menuChildren: [
+      child: PullDownButton(
+        itemBuilder: (context) => [
           for (final MapEntry<String, String> fontFamily in rawItemsMap.entries)
-            MenuItemButton(
+            PullDownMenuItem.selectable(
+              selected: currentValue == _getKeyName(fontFamily.value),
               key: ValueKey(fontFamily.key),
               // value: fontFamily.value,
               // height: options.itemHeight ?? kMinInteractiveDimension,
               // padding: options.itemPadding,
-              onPressed: () {
+              onTap: () {
                 final newValue = fontFamily.value;
                 final keyName = _getKeyName(newValue);
                 setState(() {
@@ -150,34 +151,29 @@ class QuillToolbarFontFamilyButtonState extends QuillToolbarBaseButtonState<
                   }
                 });
               },
-              child: Text(
-                fontFamily.key.toString(),
-                style: TextStyle(
+              title: fontFamily.key.toString(),
+              itemTheme: PullDownMenuItemTheme(
+                textStyle: TextStyle(
                   fontFamily:
                       options.renderFontFamilies ? fontFamily.value : null,
                   color: fontFamily.value == 'Clear'
                       ? options.defaultItemColor
-                      : null,
+                      : currentValue == _getKeyName(fontFamily.value)
+                          ? CupertinoTheme.of(context).primaryColor
+                          : null,
                 ),
               ),
+              isDestructive: fontFamily.value == 'Clear',
             ),
         ],
-        child: Builder(
-          builder: (context) {
-            final isMaterial3 = Theme.of(context).useMaterial3;
-            if (!isMaterial3) {
-              return RawMaterialButton(
-                onPressed: _onPressed,
-                child: _buildContent(context),
-              );
-            }
-            return QuillToolbarIconButton(
-              isSelected: false,
-              iconTheme: iconTheme,
-              onPressed: _onPressed,
-              icon: _buildContent(context),
-            );
+        buttonBuilder: (context, showMenu) => QuillToolbarIconButton(
+          isSelected: false,
+          iconTheme: iconTheme,
+          onPressed: () {
+            showMenu();
+            afterButtonPressed?.call();
           },
+          icon: _buildContent(context),
         ),
       ),
     );
@@ -206,11 +202,12 @@ class QuillToolbarFontFamilyButtonState extends QuillToolbarBaseButtonState<
                   ),
             ),
           ),
-          Icon(
-            Icons.arrow_drop_down,
-            size: iconSize * iconButtonFactor,
+          const SizedBox(width: 2),
+          const Icon(
             // color: iconTheme?.iconUnselectedFillColor ?? theme.iconTheme.color,
-          )
+            CupertinoIcons.chevron_up_chevron_down,
+            size: 16,
+          ),
         ],
       ),
     );

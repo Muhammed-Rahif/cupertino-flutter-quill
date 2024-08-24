@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 class QuillEditorCheckboxPoint extends StatefulWidget {
   const QuillEditorCheckboxPoint({
@@ -32,44 +32,18 @@ class QuillEditorCheckboxPointState extends State<QuillEditorCheckboxPoint> {
         onChanged: widget.onChanged,
       );
     }
-    final theme = Theme.of(context);
-    final fillColor = widget.value
-        ? (widget.enabled
-            ? theme.colorScheme.primary
-            : theme.colorScheme.onSurface.withOpacity(0.5))
-        : theme.colorScheme.surface;
-    final borderColor = widget.value
-        ? (widget.enabled
-            ? theme.colorScheme.primary
-            : theme.colorScheme.onSurface.withOpacity(0))
-        : (widget.enabled
-            ? theme.colorScheme.onSurface.withOpacity(0.5)
-            : theme.colorScheme.onSurface.withOpacity(0.3));
+    final theme = CupertinoTheme.of(context);
     final child = Container(
       alignment: AlignmentDirectional.centerEnd,
       padding: EdgeInsetsDirectional.only(end: widget.size / 2),
       child: SizedBox(
         width: widget.size,
         height: widget.size,
-        child: Material(
-          color: fillColor,
-          shape: RoundedRectangleBorder(
-            side: BorderSide(
-              color: borderColor,
-            ),
-            borderRadius: BorderRadius.circular(2),
-          ),
-          child: InkWell(
-            onTap:
-                widget.enabled ? () => widget.onChanged(!widget.value) : null,
-            child: widget.value
-                ? Icon(
-                    Icons.check,
-                    size: widget.size,
-                    color: theme.colorScheme.onPrimary,
-                  )
-                : null,
-          ),
+        child: CupertinoCheckbox(
+          activeColor: theme.primaryColor,
+          value: widget.value,
+          onChanged: (value) =>
+              widget.enabled ? widget.onChanged(!widget.value) : null,
         ),
       ),
     );

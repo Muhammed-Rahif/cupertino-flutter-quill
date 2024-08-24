@@ -1,4 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart' show Icons;
+import 'package:pull_down_button/pull_down_button.dart';
 
 import '../../../../translations.dart';
 import '../../../document/attribute.dart';
@@ -41,7 +43,6 @@ class _QuillToolbarSelectHeaderStyleDropdownButtonState
 
   Attribute<dynamic> _selectedItem = Attribute.header;
 
-  final _menuController = MenuController();
   @override
   void initState() {
     super.initState();
@@ -138,62 +139,55 @@ class _QuillToolbarSelectHeaderStyleDropdownButtonState
       );
     }
 
-    return MenuAnchor(
-      controller: _menuController,
-      menuChildren: headerAttributes
+    return PullDownButton(
+      itemBuilder: (context) => headerAttributes
           .map(
-            (e) => MenuItemButton(
-              onPressed: () {
+            (e) => PullDownMenuItem.selectable(
+              selected: _label(e) == _label(_selectedItem),
+              onTap: () {
                 _onPressed(e);
               },
-              child: Text(_label(e)),
+              title: _label(e),
+              itemTheme: PullDownMenuItemTheme(
+                textStyle: TextStyle(
+                  color: _label(e) == _label(_selectedItem)
+                      ? CupertinoTheme.of(context).primaryColor
+                      : null,
+                ),
+              ),
             ),
           )
           .toList(),
-      child: Builder(
-        builder: (context) {
-          final isMaterial3 = Theme.of(context).useMaterial3;
-          final child = Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                _label(_selectedItem),
-                style: widget.options.textStyle ??
-                    TextStyle(
-                      fontSize: iconSize / 1.15,
-                    ),
-              ),
-              Icon(
-                Icons.arrow_drop_down,
-                size: iconSize * iconButtonFactor,
-              ),
-            ],
-          );
-          if (!isMaterial3) {
-            return RawMaterialButton(
-              onPressed: _onDropdownButtonPressed,
-              child: child,
-            );
-          }
-          return QuillToolbarIconButton(
-            onPressed: _onDropdownButtonPressed,
-            icon: child,
-            isSelected: false,
-            iconTheme: iconTheme,
-            tooltip: tooltip,
-          );
-        },
-      ),
+      buttonBuilder: (context, showMenu) {
+        final child = Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              _label(_selectedItem),
+              style: widget.options.textStyle ??
+                  TextStyle(
+                    fontSize: iconSize / 1.15,
+                  ),
+            ),
+            const SizedBox(width: 2),
+            const Icon(
+              CupertinoIcons.chevron_up_chevron_down,
+              size: 16,
+            ),
+          ],
+        );
+        return QuillToolbarIconButton(
+          onPressed: () {
+            showMenu();
+            afterButtonPressed?.call();
+          },
+          icon: child,
+          isSelected: false,
+          iconTheme: iconTheme,
+          tooltip: tooltip,
+        );
+      },
     );
-  }
-
-  void _onDropdownButtonPressed() {
-    if (_menuController.isOpen) {
-      _menuController.close();
-    } else {
-      _menuController.open();
-    }
-    afterButtonPressed?.call();
   }
 }

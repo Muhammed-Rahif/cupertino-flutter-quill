@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 import '../../common/utils/widgets.dart';
 import '../../document/attribute.dart';
@@ -53,7 +53,7 @@ class QuillToolbarToggleCheckListButtonState
   String get defaultTooltip => context.loc.checkedList;
 
   @override
-  IconData get defaultIconData => Icons.check_box;
+  IconData get defaultIconData => CupertinoIcons.checkmark_square;
 
   @override
   Widget build(BuildContext context) {
@@ -74,6 +74,7 @@ class QuillToolbarToggleCheckListButtonState
       );
     }
     return UtilityWidgets.maybeTooltip(
+      context,
       message: tooltip,
       child: defaultToggleStyleButtonBuilder(
         context,

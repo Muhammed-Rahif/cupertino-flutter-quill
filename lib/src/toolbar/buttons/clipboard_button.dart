@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 import '../../../extensions.dart';
 import '../../../flutter_quill.dart';
@@ -90,9 +90,9 @@ class QuillToolbarClipboardButtonState
 
   @override
   IconData get defaultIconData => switch (widget.clipboardAction) {
-        ClipboardAction.cut => Icons.cut_outlined,
-        ClipboardAction.copy => Icons.copy_outlined,
-        ClipboardAction.paste => Icons.paste_outlined,
+        ClipboardAction.cut => CupertinoIcons.scissors,
+        ClipboardAction.copy => CupertinoIcons.doc_on_doc,
+        ClipboardAction.paste => CupertinoIcons.doc_on_clipboard,
       };
 
   void _onPressed() {
@@ -127,16 +127,18 @@ class QuillToolbarClipboardButtonState
     }
 
     return UtilityWidgets.maybeTooltip(
-        message: tooltip,
-        child: QuillToolbarIconButton(
-          icon: Icon(
-            iconData,
-            size: iconSize * iconButtonFactor,
-          ),
-          isSelected: false,
-          onPressed: currentValue ? _onPressed : null,
-          afterPressed: afterButtonPressed,
-          iconTheme: iconTheme,
-        ));
+      context,
+      message: tooltip,
+      child: QuillToolbarIconButton(
+        icon: Icon(
+          iconData,
+          size: iconSize * iconButtonFactor,
+        ),
+        isSelected: false,
+        onPressed: currentValue ? _onPressed : null,
+        afterPressed: afterButtonPressed,
+        iconTheme: iconTheme,
+      ),
+    );
   }
 }

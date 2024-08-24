@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:pull_down_button/pull_down_button.dart';
 
 import '../../../extensions.dart';
 import '../../common/utils/font.dart';
@@ -32,8 +33,6 @@ class QuillToolbarFontSizeButtonState extends QuillToolbarBaseButtonState<
     QuillToolbarFontSizeButtonOptions,
     QuillToolbarFontSizeButtonExtraOptions,
     String> {
-  final _menuController = MenuController();
-
   Map<String, String> get rawItemsMap {
     final fontSizes = options.rawItemsMap ??
         context.quillSimpleToolbarConfigurations?.fontSizesValues ??
@@ -85,16 +84,7 @@ class QuillToolbarFontSizeButtonState extends QuillToolbarBaseButtonState<
   String get defaultTooltip => context.loc.fontSize;
 
   @override
-  IconData get defaultIconData => Icons.format_size_outlined;
-
-  void _onDropdownButtonPressed() {
-    if (_menuController.isOpen) {
-      _menuController.close();
-    } else {
-      _menuController.open();
-    }
-    afterButtonPressed?.call();
-  }
+  IconData get defaultIconData => CupertinoIcons.textformat_size;
 
   @override
   Widget build(BuildContext context) {
@@ -109,18 +99,17 @@ class QuillToolbarFontSizeButtonState extends QuillToolbarBaseButtonState<
           currentValue: currentValue,
           defaultDisplayText: _defaultDisplayText,
           context: context,
-          onPressed: _onDropdownButtonPressed,
+          onPressed: () {},
         ),
       );
     }
-    return MenuAnchor(
-      controller: _menuController,
-      menuChildren: rawItemsMap.entries.map((fontSize) {
-        return MenuItemButton(
+    return PullDownButton(
+      itemBuilder: (context) => rawItemsMap.entries.map((fontSize) {
+        return PullDownMenuItem.selectable(
+          selected: currentValue == _getKeyName(fontSize.value),
           key: ValueKey(fontSize.key),
-          onPressed: () {
+          onTap: () {
             final newValue = fontSize.value;
-
             final keyName = _getKeyName(newValue);
             setState(() {
               if (keyName != context.loc.clear) {
@@ -139,31 +128,27 @@ class QuillToolbarFontSizeButtonState extends QuillToolbarBaseButtonState<
               }
             });
           },
-          child: Text(
-            fontSize.key.toString(),
-            style: TextStyle(
-              color: fontSize.value == '0' ? options.defaultItemColor : null,
+          title: fontSize.key.toString(),
+          itemTheme: PullDownMenuItemTheme(
+            textStyle: TextStyle(
+              color: fontSize.value == '0'
+                  ? options.defaultItemColor
+                  : currentValue == _getKeyName(fontSize.value)
+                      ? CupertinoTheme.of(context).primaryColor
+                      : null,
             ),
           ),
         );
       }).toList(),
-      child: Builder(
-        builder: (context) {
-          final isMaterial3 = Theme.of(context).useMaterial3;
-          if (!isMaterial3) {
-            return RawMaterialButton(
-              onPressed: _onDropdownButtonPressed,
-              child: _buildContent(context),
-            );
-          }
-          return QuillToolbarIconButton(
-            tooltip: tooltip,
-            isSelected: false,
-            iconTheme: iconTheme,
-            onPressed: _onDropdownButtonPressed,
-            icon: _buildContent(context),
-          );
+      buttonBuilder: (context, showMenu) => QuillToolbarIconButton(
+        tooltip: tooltip,
+        isSelected: false,
+        iconTheme: iconTheme,
+        onPressed: () {
+          showMenu();
+          afterButtonPressed?.call();
         },
+        icon: _buildContent(context),
       ),
     );
   }
@@ -188,10 +173,11 @@ class QuillToolbarFontSizeButtonState extends QuillToolbarBaseButtonState<
                   ),
             ),
           ),
-          Icon(
-            Icons.arrow_drop_down,
-            size: iconSize * iconButtonFactor,
-          )
+          const SizedBox(width: 2),
+          const Icon(
+            CupertinoIcons.chevron_up_chevron_down,
+            size: 16,
+          ),
         ],
       ),
     );
