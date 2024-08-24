@@ -1,6 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_quill/translations.dart';
 
@@ -50,7 +50,7 @@ class QuillToolbarImageButton extends StatelessWidget {
   IconData _iconData(BuildContext context) {
     return options.iconData ??
         baseButtonExtraOptions(context)?.iconData ??
-        Icons.image;
+        CupertinoIcons.photo;
   }
 
   String _tooltip(BuildContext context) {
@@ -156,7 +156,8 @@ class QuillToolbarImageButton extends StatelessWidget {
   }
 
   Future<String?> _typeLink(BuildContext context) async {
-    final value = await showDialog<String>(
+    final value = await showCupertinoDialog<String>(
+      barrierDismissible: true,
       context: context,
       builder: (_) => FlutterQuillLocalizationsWidget(
         child: TypeLinkDialog(

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 import '../../l10n/extensions/localizations_ext.dart';
 import '../base_button/base_value_button.dart';
@@ -35,8 +35,8 @@ class QuillToolbarIndentButtonState extends QuillToolbarIndentBaseButtonState {
 
   @override
   IconData get defaultIconData => widget.isIncrease
-      ? Icons.format_indent_increase
-      : Icons.format_indent_decrease;
+      ? CupertinoIcons.increase_indent
+      : CupertinoIcons.decrease_indent;
 
   void _sharedOnPressed() {
     widget.controller.indentSelection(widget.isIncrease);

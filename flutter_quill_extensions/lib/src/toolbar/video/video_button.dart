@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_quill/translations.dart';
 
@@ -50,7 +50,7 @@ class QuillToolbarVideoButton extends StatelessWidget {
   IconData _iconData(BuildContext context) {
     return options.iconData ??
         baseButtonExtraOptions(context)?.iconData ??
-        Icons.movie_creation;
+        CupertinoIcons.film;
   }
 
   String _tooltip(BuildContext context) {
@@ -150,7 +150,8 @@ class QuillToolbarVideoButton extends StatelessWidget {
   }
 
   Future<String?> _typeLink(BuildContext context) async {
-    final value = await showDialog<String>(
+    final value = await showCupertinoDialog<String>(
+      barrierDismissible: true,
       context: context,
       builder: (_) => FlutterQuillLocalizationsWidget(
         child: TypeLinkDialog(

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_quill/flutter_quill.dart' show QuillDialogTheme;
 import 'package:flutter_quill/translations.dart';
 
@@ -49,33 +49,39 @@ class TypeLinkDialogState extends State<TypeLinkDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      backgroundColor: widget.dialogTheme?.dialogBackgroundColor,
-      content: TextField(
-        keyboardType: TextInputType.url,
-        textInputAction: TextInputAction.done,
-        maxLines: null,
-        style: widget.dialogTheme?.inputTextStyle,
-        decoration: InputDecoration(
-          labelText: context.loc.pasteLink,
-          hintText: widget.linkType == LinkType.image
+    return CupertinoAlertDialog(
+      content: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(widget.linkType == LinkType.image
               ? context.loc.pleaseEnterAValidImageURL
-              : context.loc.pleaseEnterAValidVideoURL,
-          labelStyle: widget.dialogTheme?.labelTextStyle,
-          floatingLabelStyle: widget.dialogTheme?.labelTextStyle,
-        ),
-        autofocus: true,
-        onChanged: _linkChanged,
-        controller: _controller,
-        onEditingComplete: () {
-          if (!_canPress()) {
-            return;
-          }
-          _applyLink();
-        },
+              : context.loc.pleaseEnterAValidVideoURL),
+          const SizedBox(height: 8),
+          CupertinoTextField(
+            keyboardType: TextInputType.url,
+            textInputAction: TextInputAction.done,
+            maxLines: null,
+            style: widget.dialogTheme?.inputTextStyle,
+            // decoration: InputDecoration(
+            //   labelText: context.loc.pasteLink,
+            //   // labelStyle: widget.dialogTheme?.labelTextStyle,
+            //   // floatingLabelStyle: widget.dialogTheme?.labelTextStyle,
+            // ),
+            placeholder: context.loc.pasteLink,
+            autofocus: true,
+            onChanged: _linkChanged,
+            controller: _controller,
+            onEditingComplete: () {
+              if (!_canPress()) {
+                return;
+              }
+              _applyLink();
+            },
+          ),
+        ],
       ),
       actions: [
-        TextButton(
+        CupertinoButton(
           onPressed: _canPress() ? _applyLink : null,
           child: Text(
             context.loc.ok,

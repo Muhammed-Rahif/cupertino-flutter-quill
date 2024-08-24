@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 import '../../l10n/extensions/localizations_ext.dart';
 import '../base_button/base_value_button.dart';
@@ -37,8 +37,9 @@ class QuillToolbarHistoryButtonState
       widget.isUndo ? context.loc.undo : context.loc.redo;
 
   @override
-  IconData get defaultIconData =>
-      (widget.isUndo ? Icons.undo_outlined : Icons.redo_outlined);
+  IconData get defaultIconData => (widget.isUndo
+      ? CupertinoIcons.arrow_uturn_left
+      : CupertinoIcons.arrow_uturn_right);
 
   @override
   void initState() {
